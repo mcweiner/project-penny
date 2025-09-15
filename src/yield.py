@@ -65,13 +65,13 @@ if __name__ == "__main__":
             #print(count)
         count += 1
 
-# The size of the generator object is very small
-print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
+    # The size of the generator object is very small
+    print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
 
-print(f"\nSuccessfully iterated through {count} lists.")
-# Record the end time ⏱️
-end_time = time.perf_counter()
+    print(f"\nSuccessfully iterated through {count} lists.")
+    # Record the end time ⏱️
+    end_time = time.perf_counter()
 
-# Calculate and print the duration
-elapsed_time = end_time - start_time
-print(f"The code block took {elapsed_time:.4f} seconds to run.")
+    # Calculate and print the duration
+    elapsed_time = end_time - start_time
+    print(f"The code block took {elapsed_time:.4f} seconds to run.")

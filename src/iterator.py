@@ -72,15 +72,15 @@ if __name__ == "__main__":
             arr[count] = shuffled_list
         count += 1
 
-end_time = time.perf_counter()
+    end_time = time.perf_counter()
 
-# The size of the iterator object is small
-print(f"Memory size of the iterator object: {sys.getsizeof(data_iterator)} bytes")
-print(f"Memory size of the array: {sys.getsizeof(arr)} bytes")
+    # The size of the iterator object is small
+    print(f"Memory size of the iterator object: {sys.getsizeof(data_iterator)} bytes")
+    print(f"Memory size of the array: {sys.getsizeof(arr)} bytes")
 
-# Calculate and print the duration
-elapsed_time = end_time - start_time
-print(f"The code block took {elapsed_time:.4f} seconds to run.")
+    # Calculate and print the duration
+    elapsed_time = end_time - start_time
+    print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-write_elapsed_time = end_time - start_time
-print(f"The writing to file time took {write_elapsed_time:.4f} seconds to run.")
+    write_elapsed_time = end_time - start_time
+    print(f"The writing to file time took {write_elapsed_time:.4f} seconds to run.")
