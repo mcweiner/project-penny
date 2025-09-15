@@ -49,10 +49,6 @@ def load_data(filename: str) -> np.ndarray:
     return np.load(os.path.join(PATH_DATA, filename))
 
 
-
-# The size of the generator object is very small
-print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
-
 # To demonstrate, we can iterate through and count the items.
 # No large list is ever created.
 if __name__ == "__main__":
@@ -68,6 +64,9 @@ if __name__ == "__main__":
             save_data(np.array(shuffled_list[count-9_999:count]), f'data_store_{(count+1)//10_000}')
             #print(count)
         count += 1
+
+# The size of the generator object is very small
+print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
 
 print(f"\nSuccessfully iterated through {count} lists.")
 # Record the end time ⏱️

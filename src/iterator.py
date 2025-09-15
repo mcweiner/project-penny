@@ -4,7 +4,7 @@ import sys
 import time
 import os
 
-seed(77)
+random.seed(77)
 
 start_time = time.perf_counter()
 
