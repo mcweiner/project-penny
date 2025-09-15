@@ -75,3 +75,5 @@ if __name__ == "__main__":
     # Calculate and print the duration
     elapsed_time = end_time - start_time
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
+
+    loaded_data = np.load('data_store_1')
