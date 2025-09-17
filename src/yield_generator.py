@@ -48,6 +48,22 @@ def load_data(filename: str) -> np.ndarray:
     """
     return np.load(os.path.join(PATH_DATA, filename))
 
+def run_yield_generator(num_to_generate=100_000):
+    """
+    Function to demonstrate the usage of the yield-based shuffled list generator.
+    """
+    data_generator = generate_shuffled_lists_generator(num_to_generate)
+    count = 0
+    for shuffled_list in data_generator:
+        # Here, you would perform your analysis on 'shuffled_list'
+        # For example, you could check for a specific pattern.
+        if (count+1)%10_000==0:
+            save_data(np.array(shuffled_list[count-9_999:count]), f'data_store_{(count+1)//10_000}')
+        count += 1
+    
+    return
+    
+
 
 # To demonstrate, we can iterate through and count the items.
 # No large list is ever created.
@@ -61,7 +77,7 @@ if __name__ == "__main__":
         # Here, you would perform your analysis on 'shuffled_list'
         # For example, you could check for a specific pattern.
         if (count+1)%10_000==0:
-            save_data(np.array(shuffled_list[count-9_999:count]), f'data_store_{(count+1)//10_000}')
+            save_data(np.array(shuffled_list[count-9_999:count], dtype=np.uint8), f'data_store_{(count+1)//10_000}')
             #print(count)
         count += 1
 
@@ -77,3 +93,4 @@ if __name__ == "__main__":
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
     loaded_data = np.load(os.path.join(PATH_DATA, 'data_store_1.npy'))
+    print(loaded_data.shape)
