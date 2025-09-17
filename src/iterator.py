@@ -4,7 +4,6 @@ import sys
 import time
 import os
 
-random.seed(77)
 
 start_time = time.perf_counter()
 
@@ -14,6 +13,7 @@ class ShuffledListGenerator:
     """
     An iterator that generates shuffled lists one at a time.
     """
+
     def __init__(self, num_lists):
         self.num_lists = num_lists
         self.count = 0
@@ -24,7 +24,9 @@ class ShuffledListGenerator:
     def __next__(self):
         if self.count < self.num_lists:
             self.count += 1
-            return random.sample([0] * 26 + [1] * 26, k=52)
+            random.seed(self.count)
+            deck = random.sample([0] * 26 + [1] * 26, k=52)
+            return np.array(deck, dtype=np.uint8)
         else:
             raise StopIteration
 
@@ -86,4 +88,4 @@ if __name__ == "__main__":
     print(f"The writing to file time took {write_elapsed_time:.4f} seconds to run.")
 
     loaded_data = np.load(os.path.join(PATH_DATA, 'data_store_1.npy'))
-    print(loaded_data.shape)
+    #print(loaded_data)
