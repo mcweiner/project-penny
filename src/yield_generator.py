@@ -69,11 +69,11 @@ if __name__ == "__main__":
     print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
 
     print(f"\nSuccessfully iterated through {count} lists.")
-    # Record the end time ⏱️
+    # Record the end time
     end_time = time.perf_counter()
 
     # Calculate and print the duration
     elapsed_time = end_time - start_time
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-    loaded_data = np.load('data_store_1')
+    loaded_data = np.load(os.path.join(PATH_DATA, 'data_store_1.npy'))
