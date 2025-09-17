@@ -85,4 +85,4 @@ if __name__ == "__main__":
     write_elapsed_time = end_time - start_time
     print(f"The writing to file time took {write_elapsed_time:.4f} seconds to run.")
 
-    loaded_data = np.load('data_store_1')
+    loaded_data = load_data('data_store_1.npy')
