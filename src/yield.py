@@ -55,15 +55,29 @@ if __name__ == "__main__":
     # --- Example Usage ---
     # Using the generator to process the data without storing it all
     num_to_generate = 100_000
+    lists_per_file = num_to_generate/10
     data_generator = generate_shuffled_lists_generator(num_to_generate)
     count = 0
-    for shuffled_list in data_generator:
-        # Here, you would perform your analysis on 'shuffled_list'
-        # For example, you could check for a specific pattern.
-        if (count+1)%10_000==0:
-            save_data(np.array(shuffled_list[count-9_999:count]), f'data_store_{(count+1)//10_000}')
-            #print(count)
-        count += 1
+    current_batch = []
+    file_counter = 0
+
+    # Iterate through the generator
+    for i, shuffled_list in enumerate(generate_shuffled_lists_generator(num_to_generate)):
+        current_batch.append(shuffled_list)
+
+        # Check if the batch is full
+        if len(current_batch) == lists_per_file:
+            file_counter += 1
+            filename = f'shuffled_lists_part_{file_counter}.npy'
+            
+            # Convert the list to a NumPy array and save
+            data_to_save = np.array(current_batch)
+            save_data(data_to_save, filename)
+            
+            print(f'Saved {len(data_to_save)} lists to {filename}')
+            
+            # Reset the batch for the next file
+            current_batch = []
 
     # The size of the generator object is very small
     print(f"Memory size of the generator object: {sys.getsizeof(data_generator)} bytes")
@@ -76,4 +90,5 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-    loaded_data = np.load('data_store_1')
+    loaded_data = load_data('data_store_1.npy')
+    print(loaded_data[9])
