@@ -8,7 +8,7 @@ random.seed(77)
 
 start_time = time.perf_counter()
 
-PATH_DATA = 'Project work'
+PATH_DATA = 'Data'
 
 class ShuffledListGenerator:
     """
