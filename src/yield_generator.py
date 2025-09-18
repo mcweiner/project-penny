@@ -10,18 +10,21 @@ start_time = time.perf_counter()
 
 PATH_DATA = 'Data'
 
-def create_shuffled_list():
+def create_shuffled_list(counter=0):
     """
     Creates a single list of length 52 with 26 0s and 26 1s (representing red and black) characters, then shuffles it.
     """
-    return random.sample([0] * 26 + [1] * 26, k=52)
+    random.seed(counter)
+    return np.array(random.sample([0] * 26 + [1] * 26, k=52), dtype=np.int8)
 
 def generate_shuffled_lists_generator(num_lists=1_000_000):
     """
     Generates an iterator that yields a shuffled list one at a time.
     """
+    count = 0
     for n in range(num_lists):
-        yield create_shuffled_list()
+        yield create_shuffled_list(count)
+        count += 1
 
 def save_data(data: np.ndarray, filename: str) -> None:
     """
@@ -91,4 +94,4 @@ if __name__ == "__main__":
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
     loaded_data = load_data('data_store_1.npy')
-    print(loaded_data[9])
+    print(loaded_data)
