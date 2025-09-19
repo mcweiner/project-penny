@@ -1,4 +1,10 @@
-The two methods we tested for generation was a custom Iterator and a loop with a Yield command. The Iterator worked by having each iteration being a shuffled list of 52 evenly split zeros and ones. That way, you could move through the iterator with a for loop to generate and collect the different shuffled lists. The yield generator on the other hand, works by pausing the function's execution, sends the value back to the caller, and saves its current state. That state is returned every time the yield is called again via the for loop. Due to the Yield in the function which generates the requisite number of lists, the lists are not all saved at once; instead they are initialized as each one is called. Thanks to this, only one list is held in memory at any given time.
+The two methods we tested for generation was a custom Iterator and a loop with a Yield command.
+The Iterator worked by having each iteration being a shuffled list of 52 evenly split zeros and ones. 
+That way, you could move through the iterator with a for loop to generate and collect the different shuffled lists. 
+The yield generator on the other hand, works by pausing the function's execution, sends the value back to the caller, 
+and saves its current state. That state is returned every time the yield is called again via the for loop. Due to the Yield 
+in the function which generates the requisite number of lists, the lists are not all saved at once; 
+instead they are initialized as each one is called. Thanks to this, only one list is held in memory at any given time.
 
 Our Table had 9 categories:
 - Implementation: The name for which of the two methods' data was being displayed
@@ -11,5 +17,9 @@ Our Table had 9 categories:
 - Read Std Dev: Std Deviation of time it takes to read a file.
 - File Size: The average size in MBs of each of the 10 files that together contain all of the lists.
 
-From the data shown in the Table in DataGeneration.md, we decided to go with the 'Yield' version of the implementation. We came to this decision as while the Iterator had faster times for the most part, save for writing times, the file size for Yield was much better. We decided that the file size was more important than the few seconds of difference between Iterator and Yield.
+From the data shown in the Table in DataGeneration.md, we decided to go with the 'Yield' 
+version of the implementation. We came to this decision as while the Iterator had faster 
+times for the most part, save for writing times, the file size for Yield was much better. 
+We decided that the file size was more important than the few seconds of difference between 
+Iterator and Yield.
 
