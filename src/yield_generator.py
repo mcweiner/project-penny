@@ -71,7 +71,7 @@ if __name__ == "__main__":
         # Check if the batch is full
         if len(current_batch) == lists_per_file:
             file_counter += 1
-            filename = f'shuffled_lists_part_{file_counter}.npy'
+            filename = f'shuffled_lists_yield_part_{file_counter}.npy'
             
             # Convert the list to a NumPy array and save
             data_to_save = np.array(current_batch)
@@ -93,5 +93,5 @@ if __name__ == "__main__":
     elapsed_time = end_time - start_time
     print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-    loaded_data = load_data('data_store_1.npy')
+    loaded_data = load_data('shuffled_lists_yield_part_1.npy')
     print(loaded_data)

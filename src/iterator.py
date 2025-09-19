@@ -67,7 +67,7 @@ if __name__ == "__main__":
     for shuffled_list in data_iterator:
         if data_iterator.count%10_000 == 0 and count != 0:
             # print(count%10_000)
-            save_data(arr, f'data_store_{data_iterator.count//10_000}')
+            save_data(arr, f'shuffled_lists_iter_part_{data_iterator.count//10_000}')
             arr = np.zeros(shape=(10_000, 52))
             count = 0
         else:
@@ -87,5 +87,5 @@ if __name__ == "__main__":
     write_elapsed_time = end_time - start_time
     print(f"The writing to file time took {write_elapsed_time:.4f} seconds to run.")
 
-    loaded_data = np.load(os.path.join(PATH_DATA, 'data_store_1.npy'))
+    loaded_data = load_data('shuffled_lists_iter_part_1.npy')
     #print(loaded_data)
