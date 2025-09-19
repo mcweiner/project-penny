@@ -10,14 +10,14 @@ import iterator as iter_shuffles
 
 # Benchmark parameters
 N_RUNS = 5
-N_DECKS = 100_000
+N_DECKS = 1000
 
 
 results = []
 
 
 yield_times = []
-storage_bytes = []
+yield_storage_bytes = []
 for i in range(N_RUNS):
     start = dt.now()
     
@@ -30,20 +30,14 @@ for i in range(N_RUNS):
 
     end = dt.now()
     yield_times.append((end - start).total_seconds())
-    storage_bytes.append(size_yield)
+    yield_storage_bytes.append(size_yield)
 
 yield_times = np.array(yield_times)
-storage_bytes = np.array(storage_bytes)
-results.append({
-    "Implementation": "Yield",
-    "Mean Generate Time": yield_times.mean(),
-    "Std Dev": yield_times.std(ddof=1),
-    "Mean Storage": storage_bytes.mean()
-})
+yield_storage_bytes = np.array(yield_storage_bytes)
 
 
 iterator_times = []
-storage_bytes = []
+iter_storage_bytes = []
 for i in range(N_RUNS):
     start = dt.now()
 
@@ -57,18 +51,12 @@ for i in range(N_RUNS):
 
     end = dt.now()
     iterator_times.append((end - start).total_seconds())
-    storage_bytes.append(size_iter)
+    iter_storage_bytes.append(size_iter)
 iterator_times = np.array(iterator_times)
-storage_bytes = np.array(storage_bytes)
-results.append({
-    "Implementation": "Iterator",
-    "Mean Generate Time": iterator_times.mean(),
-    "Std Dev": iterator_times.std(ddof=1),
-    "Mean Storage": storage_bytes.mean()
-})
+iter_storage_bytes = np.array(iter_storage_bytes)
 
-write_times = []
-storage_bytes = []
+
+yield_write_times = []
 for i in range(N_RUNS):
     start = dt.now()
     # Create a sample numpy array to save
@@ -80,15 +68,10 @@ for i in range(N_RUNS):
     yield_shuffles.save_data(sample_data, f'Yield_time_test_data{i}.npy')
     end_write_time = time.perf_counter()
     write_duration = end_write_time - start_write_time
-write_times = np.array(write_times)
-results.append({
-    "Implementation": "Yield",
-    "Mean Generate Time": write_times.mean(),
-    "Std Dev": write_times.std(ddof=1),
-    "Mean Storage": 'NA'
-})
+yield_write_times = np.array(yield_write_times)
 
-write_times = []
+
+iter_write_times = []
 storage_bytes = []
 for i in range(N_RUNS):
     start = dt.now()
@@ -100,17 +83,13 @@ for i in range(N_RUNS):
     iter_shuffles.save_data(sample_data, f'Iter_time_test_data{i}.npy')
     end_write_time = time.perf_counter()
     write_duration = end_write_time - start_write_time
-    write_times.append(write_duration)
+    iter_write_times.append(write_duration)
     # print(f"Write time: {write_duration:.4f} seconds")
-write_times = np.array(write_times)
-results.append({
-    "Implementation": "Iterator",
-    "Mean Generate Time": write_times.mean(),
-    "Std Dev": write_times.std(ddof=1),
-    "Mean Storage": 'NA'
-})
+    
+iter_write_times = np.array(iter_write_times)
 
-read_times = []
+
+yield_read_times = []
 storage_bytes = []
 for i in range(N_RUNS):
     start = dt.now()
@@ -123,7 +102,7 @@ for i in range(N_RUNS):
     loaded_data = yield_shuffles.load_data(f'Yield_time_test_data{i}.npy')
     end_read_time = time.perf_counter()
     read_duration = end_read_time - start_read_time
-    read_times.append(read_duration)
+    yield_read_times.append(read_duration)
     #print(f"Read time: {read_duration:.4f} seconds")
     file_name = f'Yield_time_test_data{i}.npy'
     folder_name = "Data"
@@ -134,18 +113,23 @@ for i in range(N_RUNS):
     # Use a try-except block for safe deletion.
     os.remove(file_path)
     # print(f"File '{file_path}' deleted successfully.")
-    read_times.append(read_duration)
+    yield_read_times.append(read_duration)
     # print(f"Write time: {write_duration:.4f} seconds")
     
-read_times = np.array(read_times)
+yield_read_times = np.array(yield_read_times)
 results.append({
     "Implementation": "Yield",
-    "Mean Read Time": read_times.mean(),
-    "Std Dev": read_times.std(ddof=1),
-    "Mean Storage": 'NA'
+    "Mean Generate Time": yield_times.mean(),
+    "Generate Std Dev": yield_times.std(ddof=1),
+    "Mean Storage": yield_storage_bytes.mean(),
+    "Mean Write Time": yield_write_times.mean(),
+    "Write Std Dev": yield_write_times.std(ddof=1),
+    "Mean Read Time": yield_read_times.mean(),
+    "Read Std Dev": yield_read_times.std(ddof=1)
 })
 
-read_times = []
+
+iter_read_times = []
 storage_bytes = []
 for i in range(N_RUNS):
     start = dt.now()
@@ -158,7 +142,7 @@ for i in range(N_RUNS):
     loaded_data = iter_shuffles.load_data(f'Iter_time_test_data{i}.npy')
     end_read_time = time.perf_counter()
     read_duration = end_read_time - start_read_time
-    read_times.append(read_duration)
+    iter_read_times.append(read_duration)
     #print(f"Read time: {read_duration:.4f} seconds")
     file_name = f'Iter_time_test_data{i}.npy'
     folder_name = "Data"
@@ -171,12 +155,18 @@ for i in range(N_RUNS):
     # print(f"File '{file_path}' deleted successfully.")
     #read_times.append(read_times)
     # print(f"Write time: {write_duration:.4f} seconds")
-read_times = np.array(read_times)
+iter_read_times = np.array(iter_read_times)
+
+iter_read_times = np.array(iter_read_times)
 results.append({
     "Implementation": "Iterator",
-    "Mean Generate Time": read_times.mean(),
-    "Std Dev": read_times.std(ddof=1),
-    "Mean Storage": 'NA'
+    "Mean Generate Time": iterator_times.mean(),
+    "Generate Std Dev": iterator_times.std(ddof=1),
+    "Mean Storage": iter_storage_bytes.mean(),
+    "Mean Write Time": iter_write_times.mean(),
+    "Write Std Dev": iter_write_times.std(ddof=1),
+    "Mean Read Time": iter_read_times.mean(),
+    "Read Std Dev": iter_read_times.std(ddof=1)
 })
 
 # Display results as a DataFrame
