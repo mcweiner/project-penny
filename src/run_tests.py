@@ -59,7 +59,7 @@ for i in range(N_RUNS):
     start = dt.now()
     # Create a sample numpy array to save
     # May have to modify
-    sample_data = np.random.rand(10_000, 52)
+    sample_data = np.random.rand(2_000_000, 52)
 
     # Measure write time
     start_write_time = time.perf_counter()
@@ -74,7 +74,7 @@ iter_write_times = []
 for i in range(N_RUNS):
     start = dt.now()
     # Create a sample numpy array to save
-    sample_data = np.random.rand(100_000, 52)
+    sample_data = np.random.rand(2_000_000, 52)
 
     # Measure write time
     start_write_time = time.perf_counter()
@@ -100,7 +100,6 @@ for i in range(N_RUNS):
     start_read_time = time.perf_counter()
     loaded_data = yield_shuffles.load_data(f'Yield_time_test_data{i}.npy')
     end_read_time = time.perf_counter()
-    yield_file_size.append(os.path.getsize(f'Yield_time_test_data{i}.npy'))
     read_duration = end_read_time - start_read_time
     yield_read_times.append(read_duration)
     #print(f"Read time: {read_duration:.4f} seconds")
@@ -121,12 +120,12 @@ results.append({
     "Implementation": "Yield",
     "Mean Generate Time": yield_generate_times.mean(),
     "Generate Std Dev": yield_generate_times.std(ddof=1),
-    "Mean Storage": yield_storage_bytes.mean(),
+    "Mean Storage": yield_storage_bytes.mean()/1_000_000,
     "Mean Write Time": yield_write_times.mean(),
     "Write Std Dev": yield_write_times.std(ddof=1),
     "Mean Read Time": yield_read_times.mean(),
     "Read Std Dev": yield_read_times.std(ddof=1),
-    "File Size": np.mean(yield_file_size)
+    "File Size": np.mean(yield_file_size) / 1_000_000
 })
 
 
@@ -141,9 +140,7 @@ for i in range(N_RUNS):
 
     # Measure write time
     start_read_time = time.perf_counter()
-    loaded_data = iter_shuffles.load_data(f'Iter_time_test_data{i}.npy')
     end_read_time = time.perf_counter()
-    iter_file_size.append(os.path.getsize(f'Iter_time_test_data{i}.npy'))
     read_duration = end_read_time - start_read_time
     iter_read_times.append(read_duration)
     #print(f"Read time: {read_duration:.4f} seconds")
@@ -160,17 +157,16 @@ for i in range(N_RUNS):
     # print(f"Write time: {write_duration:.4f} seconds")
 iter_read_times = np.array(iter_read_times)
 
-iter_read_times = np.array(iter_read_times)
 results.append({
     "Implementation": "Iterator",
     "Mean Generate Time": iterator_generate_times.mean(),
     "Generate Std Dev": iterator_generate_times.std(ddof=1),
-    "Mean Storage": iter_storage_bytes.mean(),
+    "Mean Storage": iter_storage_bytes.mean()/1_000_000,
     "Mean Write Time": iter_write_times.mean(),
     "Write Std Dev": iter_write_times.std(ddof=1),
     "Mean Read Time": iter_read_times.mean(),
     "Read Std Dev": iter_read_times.std(ddof=1),
-    "File Size": np.mean(iter_file_size)
+    "File Size": np.mean(iter_file_size)/1_000_000
 })
 
 # Display results as a DataFrame
