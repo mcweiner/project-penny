@@ -57,18 +57,19 @@ def load_data(filename: str) -> np.ndarray:
 
 # --- Example Usage ---
 if __name__ == "__main__":
-    num_to_generate = 100_000
+    num_to_generate = 2_000_000
     data_iterator = ShuffledListGenerator(num_to_generate)
+    lists_per_file = num_to_generate//10
     
     # Iterate over the iterator just like a list, but with low memory usage
     write_start_time = time.perf_counter()
     count = 0
-    arr = np.zeros(shape=(10_000, 52), dtype=np.uint8)
+    arr = np.zeros(shape=(lists_per_file, 52), dtype=np.uint8)
     for shuffled_list in data_iterator:
-        if data_iterator.count%10_000 == 0 and count != 0:
+        if data_iterator.count%lists_per_file == 0 and count != 0:
             # print(count%10_000)
-            save_data(arr, f'shuffled_lists_iter_part_{data_iterator.count//10_000}')
-            arr = np.zeros(shape=(10_000, 52))
+            save_data(arr, f'shuffled_lists_iter_part_{data_iterator.count//lists_per_file}')
+            arr = np.zeros(shape=(lists_per_file, 52))
             count = 0
         else:
             arr[count] = shuffled_list
