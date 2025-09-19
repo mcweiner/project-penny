@@ -4,7 +4,6 @@ import numpy as np
 import sys
 import time
 
-random.seed(77)
 
 start_time = time.perf_counter()
 
