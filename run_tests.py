@@ -155,7 +155,7 @@ for i in range(N_RUNS):
 
     # Measure write time
     start_read_time = time.perf_counter()
-    loaded_data = yield_shuffles.load_data(f'Iter_time_test_data{i}.npy')
+    loaded_data = iter_shuffles.load_data(f'Iter_time_test_data{i}.npy')
     end_read_time = time.perf_counter()
     read_duration = end_read_time - start_read_time
     iter_read_times.append(read_duration)
