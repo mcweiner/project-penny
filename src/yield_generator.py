@@ -9,21 +9,19 @@ start_time = time.perf_counter()
 
 PATH_DATA = 'Data'
 
-def create_shuffled_list(counter=0):
+def create_shuffled_list(seed: int) -> np.ndarray:
     """
     Creates a single list of length 52 with 26 0s and 26 1s (representing red and black) characters, then shuffles it.
     """
-    random.seed(counter)
+    random.seed(seed)
     return np.array(random.sample([0] * 26 + [1] * 26, k=52), dtype=np.int8)
 
 def generate_shuffled_lists_generator(num_lists=1_000_000):
     """
     Generates an iterator that yields a shuffled list one at a time.
     """
-    count = 0
     for n in range(num_lists):
-        yield create_shuffled_list(count)
-        count += 1
+        yield create_shuffled_list(n)
 
 def save_data(data: np.ndarray, filename: str) -> None:
     """
@@ -56,7 +54,7 @@ def load_data(filename: str) -> np.ndarray:
 if __name__ == "__main__":
     # --- Example Usage ---
     # Using the generator to process the data without storing it all
-    num_to_generate = 2_000_000
+    num_to_generate = 1_000
     lists_per_file = num_to_generate/10
     data_generator = generate_shuffled_lists_generator(num_to_generate)
     count = 0
@@ -92,5 +90,5 @@ if __name__ == "__main__":
     #elapsed_time = end_time - start_time
     #print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-    #loaded_data = load_data('shuffled_lists_yield_part_1.npy')
-    #print(loaded_data)
+    loaded_data = load_data('shuffled_lists_yield_part_1.npy')
+    print(loaded_data)
