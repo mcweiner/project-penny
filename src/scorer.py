@@ -1,12 +1,6 @@
 import numpy as np
 import random
 
-def create_score_table():
-    """
-    Create a blank table to track scores for each combination of card choices.
-    """
-    return np.zeros((56, 52), dtype=int)
-
 p1_choice = np.array([0, 0, 0])
 p2_choice = np.array([0, 0, 1])
 random.seed(42) # For reproducibility
@@ -20,9 +14,10 @@ def first_instance_p1_only(p1_choice: np.ndarray, deck: np.ndarray):
     Find the index of the first occurrence of player 1's chosen sequence in the deck. Returns -1 if not found.
     """
     windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
+    print(windows)
     p1_matches = np.all(windows == p1_choice, axis=1)
     p1_idx = np.argmax(p1_matches) if np.any(p1_matches) else -1
-    return np.int64(p1_idx)
+    return p1_idx
 
 def first_instance_p2_only(p2_choice: np.ndarray, deck: np.ndarray):
     """
@@ -31,7 +26,7 @@ def first_instance_p2_only(p2_choice: np.ndarray, deck: np.ndarray):
     windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
     p2_matches = np.all(windows == p2_choice, axis=1)
     p2_idx = np.argmax(p2_matches) if np.any(p2_matches) else -1
-    return np.int64(p2_idx)
+    return p2_idx
 
 def play_entire_deck(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndarray):
     """
@@ -43,6 +38,7 @@ def play_entire_deck(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndar
     p1_total_tricks = 0
     p2_total_tricks = 0
     i = 0
+    winner = 'tie'
     while i <= len(deck) - 3:
         sub_deck = deck[i:]
         p1_idx = first_instance_p1_only(p1_choice, sub_deck)
@@ -57,9 +53,11 @@ def play_entire_deck(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndar
             win_idx = p2_idx
             p2_total_tricks += 1
             p2_total_cards += win_idx + 3
-        else:
-            win_idx = p1_idx  # tie, both at same index
+        #else:
+            #win_idx = p1_idx  tie, both at same index (probably not needed)
         i += win_idx + 3
-    return p1_total_cards, p2_total_cards, p1_total_tricks, p2_total_tricks
+    winner = 'p1' if p1_total_cards > p2_total_cards else 'p2' if p2_total_cards > p1_total_cards else 'tie'
+    return winner, p1_total_cards, p2_total_cards, p1_total_tricks, p2_total_tricks
+
 
 print(play_entire_deck(p1_choice, p2_choice, deck1))
