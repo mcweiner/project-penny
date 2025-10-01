@@ -14,7 +14,6 @@ def first_instance_p1_only(p1_choice: np.ndarray, deck: np.ndarray):
     Find the index of the first occurrence of player 1's chosen sequence in the deck. Returns -1 if not found.
     """
     windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
-    print(windows)
     p1_matches = np.all(windows == p1_choice, axis=1)
     p1_idx = np.argmax(p1_matches) if np.any(p1_matches) else -1
     return p1_idx
@@ -50,8 +49,8 @@ def play_entire_deck_cards(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: n
         elif p2_idx != -1 and (p1_idx == -1 or p2_idx < p1_idx):
             win_idx = p2_idx
             p2_total_cards += win_idx + 3
-        #else:
-            #win_idx = p1_idx  tie, both at same index (probably not needed)
+        else:
+            win_idx = p1_idx  #tie, both at same index (probably not needed)
         i += win_idx + 3
     winner = 'p1' if p1_total_cards > p2_total_cards else 'p2' if p2_total_cards > p1_total_cards else 'tie'
     return winner, p1_total_cards, p2_total_cards
@@ -78,10 +77,11 @@ def play_entire_deck_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: 
         elif p2_idx != -1 and (p1_idx == -1 or p2_idx < p1_idx):
             win_idx = p2_idx
             p2_total_tricks += 1
-        #else:
-            #win_idx = p1_idx  tie, both at same index (probably not needed)
+        else:
+            win_idx = p1_idx  #tie, both at same index (probably not needed)
         i += win_idx + 3
     winner = 'p1' if p1_total_tricks > p2_total_tricks else 'p2' if p2_total_tricks > p1_total_tricks else 'tie'
     return winner, p1_total_tricks, p2_total_tricks
 
+print(play_entire_deck_tricks(p1_choice, p2_choice, deck1))
 print(play_entire_deck_cards(p1_choice, p2_choice, deck1))
