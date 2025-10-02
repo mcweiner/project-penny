@@ -25,14 +25,17 @@ def create_score_table():
     results = np.zeros((num_pairs, 3), dtype=np.int32)
     return results
 
-def run_all_combinations(pairs, deck, results):
+def run_all_combinations(pairs, deck, results, scoring_function):
     """
     Run the scoring for all combinations of card choices over a specified number of decks.
     """
     for i in range(len(pairs)):
         p1_choice = np.array(pairs[i][0])
         p2_choice = np.array(pairs[i][1])
-        winner, p1_cards, p2_cards = scorer.play_entire_deck_tricks(p1_choice, p2_choice, deck)
+        if scoring_function == 'tricks':
+            winner, p1_cards, p2_cards = scorer.play_entire_deck_tricks(p1_choice, p2_choice, deck)
+        else:
+            winner, p1_cards, p2_cards = scorer.play_entire_deck_cards(p1_choice, p2_choice, deck)
 
         if winner == 'p1':
             results[i, 0] += 1
@@ -43,7 +46,7 @@ def run_all_combinations(pairs, deck, results):
 
     return results
 
-#results = run_all_combinations(create_choice_list(), deck1, create_score_table())
+#results = run_all_combinations(create_choice_list(), deck1, create_score_table(), "cards")
 #df = pd.DataFrame(results, columns=['p1_wins', 'p2_wins', 'ties'])
 #df['pair'] = create_choice_list()
 #print(df)
