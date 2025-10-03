@@ -19,7 +19,7 @@ def score_all_decks(scoring_function: str) -> np.ndarray:
     results = score_all_combos.create_score_table()
 
     all_decks = load_decks()
-    for deck in all_decks[:100]:  # Limit to first 100 decks for testing
+    for deck in all_decks:
         results = score_all_combos.run_all_combinations(pairs, deck, results, scoring_function)
     return results
 

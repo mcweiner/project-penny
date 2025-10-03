@@ -125,10 +125,12 @@ if __name__ == "__main__":
     
     # 2. Create an empty DataFrame to hold the scores
     score_df = create_score_table(choice_pairs)
+    # If you want to use a larger deck, uncomment the next line
+    deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
     
     # 3. Run the simulation and get the final scores
-    final_scores = run_all_combinations_big_deck(choice_pairs, deck2, score_df)
-    
+    final_scores = run_all_combinations_big_deck(choice_pairs, deck, score_df)
+
     # 4. Print the final results to the console
     print("\n--- Final Score Table ---")
     print(final_scores)
