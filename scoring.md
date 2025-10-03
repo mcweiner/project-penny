@@ -6,6 +6,6 @@ Next, we start playing through the deck, and once the first match is found we ma
 
 We created a list of all possible interesting choices of combinations. For each deck, we run all combinations and save the win totals for each player choice into an array. We then turn this array into a dataframe for easier visualization and organization. 
 
-We first tested having the tricks counter and card counter all in one function. Then, we tested having two separate functions for counting each deck. Although it is slightly faster to have tricks and cards counter work all at once, we figured it would be better down the line to have them separated. 
+We first tested having the tricks counter and card counter all in one function. Then, we tested having two separate functions for counting each deck. Although it is slightly faster to have tricks and cards counter work all at once, we figured it would be better down the line to have them separated when creating the table and heat map. As the number of decks grows, we can track one scoring method at a time, and we figured just for organization purposes it is better to have two functions. 
 
 We created a csv file in our Tables folder that shows 1000 decks scored by the tricks method and card method. 
