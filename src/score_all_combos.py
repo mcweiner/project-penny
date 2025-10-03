@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import itertools
 import random
-import src.yield_generator as yield_shuffles
+import yield_generator as yield_shuffles
 import os
 
 
@@ -50,7 +50,10 @@ def create_score_table(pairs):
     df = pd.DataFrame(matchups, columns=['pairs'])
     df['p1_wins_cards'] = 0
     df['p2_wins_cards'] = 0
-    df['ties'] = 0
+    df['ties_cards'] = 0
+    df['p1_wins_tricks'] = 0
+    df['p2_wins_tricks'] = 0
+    df['ties_tricks'] = 0
     return df
 
 def run_all_combinations_big_deck(pairs, deck, score_table):
@@ -63,29 +66,48 @@ def run_all_combinations_big_deck(pairs, deck, score_table):
         for i in range(len(pairs)):
             p1_choice = np.array(pairs[i][0])
             p2_choice = np.array(pairs[i][1])
-            winner, p1_cards, p2_cards = scorer.play_entire_deck_tricks(p1_choice, p2_choice, deck[n])
+
+            winner, p1_cards, p2_cards = scorer.play_entire_deck_cards(p1_choice, p2_choice, deck[n])
             if winner == 'p1':
                 score_table.loc[i,'p1_wins_cards'] += 1
             elif winner == 'p2':
                 score_table.loc[i, 'p2_wins_cards'] += 1
             else:
-                score_table.loc[i, 'ties'] += 1
+                score_table.loc[i, 'ties_cards'] += 1
+
+            winner, p1_tricks, p2_tricks = scorer.play_entire_deck_tricks(p1_choice, p2_choice, deck[n])
+            if winner == 'p1':
+                score_table.loc[i,'p1_wins_tricks'] += 1
+            elif winner == 'p2':
+                score_table.loc[i, 'p2_wins_tricks'] += 1
+            else:
+                score_table.loc[i, 'ties_tricks'] += 1
     print("Processing complete.")
     return score_table
 
-# --- New Function ---
-def save_results_to_csv(score_df, filename="pairs_table.csv"):
+def save_results_to_csv(score_df, filepath="pairs_table.csv"):
     """
-    Saves the final score DataFrame to a CSV file.
+    Saves the final score DataFrame to a CSV file in a specified path.
+    Creates the destination folder if it does not exist.
 
     Args:
         score_df (pd.DataFrame): The DataFrame containing the pairs scores.
-        filename (str): The name of the output CSV file.
+        filepath (str): The full path for the output CSV file (e.g., "Tables/results.csv").
     """
     try:
-        # The index=False argument prevents pandas from writing the row indices to the file.
-        score_df.to_csv(filename, index=False)
-        print(f"✅ Results successfully saved to '{filename}'")
+        # Get the directory part of the filepath
+        folder = os.path.dirname(filepath)
+        
+        # If a folder is specified (i.e., the path contains a '/')
+        # and it doesn't exist, create it.
+        if folder and not os.path.exists(folder):
+            os.makedirs(folder)
+            print(f"📁 Created directory: '{folder}'")
+            
+        # Save the DataFrame to the specified path
+        score_df.to_csv(filepath, index=False)
+        print(f"✅ Results successfully saved to '{filepath}'")
+        
     except Exception as e:
         print(f"❌ Error saving file: {e}")
 
@@ -97,6 +119,7 @@ if __name__ == "__main__":
     #choice_pairs = create_choice_list()
     #score_df = create_score_table(choice_pairs)
     #print(run_all_combinations_big_deck(choice_pairs, deck2, score_df))
+
     # 1. Create the list of all possible pairs
     choice_pairs = create_choice_list()
     
@@ -110,5 +133,6 @@ if __name__ == "__main__":
     print("\n--- Final Score Table ---")
     print(final_scores)
     
-    # 5. Save the final score table to a CSV file
-    save_results_to_csv(final_scores, filename="pairs_table.csv")
+    # 5. Save the final score table to a CSV file inside the "Tables" folder
+    #    This is the only line you need to change.
+    save_results_to_csv(final_scores, filepath="Tables/pairs_table.csv")
