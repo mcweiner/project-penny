@@ -69,7 +69,7 @@ def play_entire_deck_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: 
         p1_idx = first_instance_p1_only(p1_choice, sub_deck)
         p2_idx = first_instance_p2_only(p2_choice, sub_deck)
         if p1_idx == -1 and p2_idx == -1:
-            print('Error, neither sequence found')
+            #print('Error, neither sequence found')
             break
         elif p1_idx != -1 and (p2_idx == -1 or p1_idx < p2_idx):
             win_idx = p1_idx

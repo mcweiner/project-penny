@@ -10,6 +10,38 @@ deck1 = np.array(random.sample([0] * 26 + [1] * 26, k=52), dtype=np.int8)
 random.seed(43) # For reproducibility
 deck2 = np.array(random.sample([0] * 26 + [1] * 26, k=52), dtype=np.int8)
 
+import numpy as np
+
+def find_first_instance(sequence: np.ndarray, deck: np.ndarray) -> int:
+    """
+    Finds the index of the first occurrence of a chosen sequence in the deck.
+
+    Args:
+        sequence (np.ndarray): The sequence of values to search for.
+        deck (np.ndarray): The array to search within.
+
+    Returns:
+        int: The starting index of the first match, or -1 if the sequence is not found.
+    """
+    # Get the length of the sequence to create windows of the correct size.
+    sequence_len = len(sequence)
+
+    # If the deck is shorter than the sequence, a match is impossible.
+    if len(deck) < sequence_len:
+        return -1
+
+    # Create sliding windows of the same size as the sequence.
+    windows = np.lib.stride_tricks.sliding_window_view(deck, window_shape=sequence_len)
+
+    # Find all windows that perfectly match the sequence.
+    matches = np.all(windows == sequence, axis=1)
+
+    # If any matches exist, np.argmax finds the index of the first 'True' value.
+    # Otherwise, return -1.
+    if np.any(matches):
+        return np.argmax(matches)
+    else:
+        return -1
 
 def first_instance_p1_only(p1_choice: np.ndarray, deck: np.ndarray):
     """
