@@ -89,7 +89,7 @@ def create_win_draw_heatmap_cards():
     if not os.path.exists(tables_folder_path):
         os.makedirs(tables_folder_path)
     
-    output_filename = os.path.join(tables_folder_path, 'cards_win_draw_heatmap.png')
+    output_filename = os.path.join(tables_folder_path, 'win_draw_heatmap_cards.png')
     plt.savefig(output_filename)
     print(f"Heatmap saved successfully as '{output_filename}'")
     plt.close() # Close the plot to start fresh for the next one
@@ -179,7 +179,7 @@ def create_win_draw_heatmap_tricks():
     if not os.path.exists(tables_folder_path):
         os.makedirs(tables_folder_path)
     
-    output_filename = os.path.join(tables_folder_path, 'tricks_win_draw_heatmap.png')
+    output_filename = os.path.join(tables_folder_path, 'win_draw_heatmap_tricks.png')
     plt.savefig(output_filename)
     print(f"Heatmap saved successfully as '{output_filename}'")
     plt.close() # Close the plot
@@ -188,7 +188,7 @@ def augment_data(n: int):
     """
     This function should complete the following:
     - Create n new decks
-    - Automatically update update scores and figures based on the new decks
+    - Automatically update scores and figures based on the new decks
     """
 
 if __name__ == '__main__':
