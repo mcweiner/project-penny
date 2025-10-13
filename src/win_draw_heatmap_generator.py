@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd # Import the pandas library to work with CSV data
+import score_all_combos as combo
+import yield_generator as yield_shuffles
+
+PATH_DATA = 'Data'
 
 def create_win_draw_heatmap_cards():
     """
@@ -189,8 +193,70 @@ def augment_data(n: int):
     This function should complete the following:
     - Create n new decks
     - Automatically update scores and figures based on the new decks
+
+    - Modify .npy files, then csv, then heatmap
     """
 
-if __name__ == '__main__':
+    # add the n amount of decks
+    data_generator = yield_shuffles.generate_shuffled_lists_generator(n)
+    count = 0
+    deck_batch = []
+    file_counter = 0
+
+    # gets the decks that will be added
+    for i, shuffled_list in enumerate(data_generator):
+        deck_batch.append(shuffled_list)
+    
+    deck_batch_array = np.array(deck_batch)
+
+    # update the .npy files (the data)
+    for j in range(1, 11):
+        filename = f'shuffled_lists_yield_part_{j}.npy'
+
+        startoff = int((j - 1) * n / 10)  # Forces the result to an integer
+        cutoff = int(j * n / 10)          # Forces the result to an integer
+        
+        # 1. Load the existing data
+        existing_data = np.load(os.path.join(PATH_DATA, filename))
+        #print(f"Loaded existing data: {existing_data}")
+
+        # 2. Concatenate the existing and new data
+        # Use axis=0 for 1D arrays or to stack arrays along the first dimension (rows)
+        updated_data = np.concatenate((existing_data,
+                                       deck_batch_array[startoff : cutoff]),
+                                       axis=0)
+        #print(f"Concatenated data: {updated_data}")
+
+        # 3. Save the *entire* new array back to the file (overwriting the old one)
+        np.save(filename, updated_data)
+
+    # update the .csv table
+    # 1. Create the list of all possible pairs
+    choice_pairs = combo.create_choice_list()
+    
+    # 2. Create an empty DataFrame to hold the scores
+    score_df = combo.create_score_table(choice_pairs)
+    # If you want to use a larger deck, uncomment the next line
+    deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
+    
+    # 3. Run the simulation and get the final scores
+    final_scores = combo.run_all_combinations_big_deck(choice_pairs, deck, score_df)
+
+    # 4. Print the final results to the console
+    print("\n--- Final Score Table ---")
+    print(final_scores)
+    
+    # 5. Save the final score table to a CSV file inside the "Tables" folder
+    #    This is the only line you need to change.
+    combo.save_results_to_csv(final_scores, filepath="Tables/pairs_table.csv")
+
+    # update the heatmaps
     create_win_draw_heatmap_cards()
     create_win_draw_heatmap_tricks()
+
+
+
+if __name__ == '__main__':
+    #create_win_draw_heatmap_cards()
+    #create_win_draw_heatmap_tricks()
+    augment_data(100)
