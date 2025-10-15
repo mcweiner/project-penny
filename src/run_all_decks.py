@@ -16,11 +16,14 @@ def score_all_decks(scoring_function: str) -> np.ndarray:
     Score all decks using the specified scoring function ('cards' or 'tricks').
     '''
     pairs = score_all_combos.create_choice_list()
-    results = score_all_combos.create_score_table()
+    score_table = score_all_combos.create_score_table(pairs)
 
     all_decks = load_decks()
+    results_list = []
     for deck in all_decks:
-        results = score_all_combos.run_all_combinations(pairs, deck, results, scoring_function)
+        result = score_all_combos.run_all_combinations_big_deck(pairs, deck, score_table)
+        results_list.append(result)
+    results = np.array(results_list)
     return results
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@ def first_instance_p2_only(p2_choice: np.ndarray, deck: np.ndarray):
     p2_idx = np.argmax(p2_matches) if np.any(p2_matches) else -1
     return p2_idx
 
-def play_entire_deck_cards(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndarray):
+def play_entire_deck_slow_cards(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndarray):
     """
     Play through the entire deck, scoring each round as sequences are found.
     Returns total cards for each player and the winner.
@@ -46,7 +46,7 @@ def play_entire_deck_cards(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: n
     winner = 'p1' if p1_total_cards > p2_total_cards else 'p2' if p2_total_cards > p1_total_cards else 'tie'
     return winner, p1_total_cards, p2_total_cards
 
-def play_entire_deck_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndarray):
+def play_entire_deck_slow_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: np.ndarray):
     """
     Play through the entire deck, scoring each round as sequences are found.
     Returns total tricks for each player and the winner.
@@ -74,5 +74,68 @@ def play_entire_deck_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, deck: 
     winner = 'p1' if p1_total_tricks > p2_total_tricks else 'p2' if p2_total_tricks > p1_total_tricks else 'tie'
     return winner, p1_total_tricks, p2_total_tricks
 
-#print(play_entire_deck_tricks(p1_choice, p2_choice, deck1))
-#print(play_entire_deck_cards(p1_choice, p2_choice, deck1))
+def find_all_indices(choice, deck_windows):
+    return np.flatnonzero(np.all(deck_windows == choice, axis=1))
+
+def play_entire_deck_cards(p1_choice, p2_choice, deck):
+    deck_windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
+    p1_idxs = find_all_indices(p1_choice, deck_windows)
+    p2_idxs = find_all_indices(p2_choice, deck_windows)
+
+    p1_total = p2_total = 0
+    pos = 0
+    i1 = i2 = 0
+    while i1 < len(p1_idxs) or i2 < len(p2_idxs):
+        next_p1 = p1_idxs[i1] if i1 < len(p1_idxs) else np.inf
+        next_p2 = p2_idxs[i2] if i2 < len(p2_idxs) else np.inf
+
+        if next_p1 == np.inf and next_p2 == np.inf:
+            break
+
+        if next_p1 < next_p2:
+            p1_total += next_p1 - pos + 3
+            pos = next_p1 + 3
+            i1 += 1
+        elif next_p2 < next_p1:
+            p2_total += next_p2 - pos + 3
+            pos = next_p2 + 3
+            i2 += 1
+        else:  # tie
+            pos = next_p1 + 3
+            i1 += 1
+            i2 += 1
+
+    winner = 'p1' if p1_total > p2_total else 'p2' if p2_total > p1_total else 'tie'
+    return winner, p1_total, p2_total
+
+def play_entire_deck_tricks(p1_choice, p2_choice, deck):
+    deck_windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
+    p1_idxs = find_all_indices(p1_choice, deck_windows)
+    p2_idxs = find_all_indices(p2_choice, deck_windows)
+
+    p1_total = p2_total = 0
+    pos = 0
+    i1 = i2 = 0
+    while i1 < len(p1_idxs) or i2 < len(p2_idxs):
+        next_p1 = p1_idxs[i1] if i1 < len(p1_idxs) else np.inf
+        next_p2 = p2_idxs[i2] if i2 < len(p2_idxs) else np.inf
+
+        if next_p1 == np.inf and next_p2 == np.inf:
+            break
+
+        if next_p1 < next_p2:
+            p1_total += 1
+            pos = next_p1 + 3
+            i1 += 1
+        elif next_p2 < next_p1:
+            p2_total += 1
+            pos = next_p2 + 3
+            i2 += 1
+        else:  # tie
+            pos = next_p1 + 3
+            i1 += 1
+            i2 += 1
+
+    winner = 'p1' if p1_total > p2_total else 'p2' if p2_total > p1_total else 'tie'
+    return winner, p1_total, p2_total
+

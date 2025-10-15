@@ -63,7 +63,7 @@ def run_all_combinations_big_deck(pairs, deck, score_table):
     num_decks = len(deck)
     for n in range(num_decks):
         # Do we need this? We may need to optimize this part if we have time?
-        print(f"Processing deck {n + 1}/{num_decks}...")
+        #print(f"Processing deck {n + 1}/{num_decks}...")
         for i in range(len(pairs)):
             p1_choice = np.array(pairs[i][0])
             p2_choice = np.array(pairs[i][1])
@@ -112,6 +112,12 @@ def save_results_to_csv(score_df, filepath="pairs_table.csv"):
     except Exception as e:
         print(f"❌ Error saving file: {e}")
 
+def combine_score_tables(df_old, df_new):
+    # Merge and sum numeric columns
+    merged = pd.concat([df_old, df_new])
+    combined = merged.groupby("pairs", as_index=False).sum()
+    return combined
+
 if __name__ == "__main__":
     #print(run_all_combinations(create_choice_list(), deck1, create_score_table()))
 
@@ -127,10 +133,21 @@ if __name__ == "__main__":
     # 2. Create an empty DataFrame to hold the scores
     score_df = create_score_table(choice_pairs)
     # If you want to use a larger deck, uncomment the next line
-    deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
+    #deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
+    # Load all deck files and combine them
+    all_decks = []
+    for j in range(1, 11):
+        filename = f'shuffled_lists_yield_part_{j}.npy'
+        decks_part = yield_shuffles.load_data(filename)
+        all_decks.append(decks_part)
+
+    all_decks_array = np.concatenate(all_decks, axis=0)
+
+    # Run scoring with all decks
+    final_scores = run_all_combinations_big_deck(choice_pairs, all_decks_array, score_df)
     
     # 3. Run the simulation and get the final scores
-    final_scores = run_all_combinations_big_deck(choice_pairs, deck, score_df)
+    #final_scores = run_all_combinations_big_deck(choice_pairs, deck, score_df)
 
     # 4. Print the final results to the console
     print("\n--- Final Score Table ---")

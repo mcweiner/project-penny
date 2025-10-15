@@ -188,7 +188,7 @@ def create_win_draw_heatmap_tricks():
     print(f"Heatmap saved successfully as '{output_filename}'")
     plt.close() # Close the plot
 
-def augment_data(n: int):
+def old_augment_data(n: int):
     """
     This function should complete the following:
     - Create n new decks
@@ -239,10 +239,21 @@ def augment_data(n: int):
     # 2. Create an empty DataFrame to hold the scores
     score_df = combo.create_score_table(choice_pairs)
     # If you want to use a larger deck, uncomment the next line
-    deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
+    #deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
+    # Load all deck files and combine them
+    all_decks = []
+    for j in range(1, 11):
+        filename = f'shuffled_lists_yield_part_{j}.npy'
+        decks_part = yield_shuffles.load_data(filename)
+        all_decks.append(decks_part)
+
+    all_decks_array = np.concatenate(all_decks, axis=0)
+
+    # Run scoring with all decks
+    final_scores = combo.run_all_combinations_big_deck(choice_pairs, all_decks_array, score_df)
     
     # 3. Run the simulation and get the final scores
-    final_scores = combo.run_all_combinations_big_deck(choice_pairs, deck, score_df)
+    #final_scores = combo.run_all_combinations_big_deck(choice_pairs, deck, score_df)
 
     # 4. Print the final results to the console
     print("\n--- Final Score Table ---")
@@ -256,9 +267,40 @@ def augment_data(n: int):
     create_win_draw_heatmap_cards()
     create_win_draw_heatmap_tricks()
 
+def augment_data(n: int):
+    # 1. Generate new decks
+    data_generator = yield_shuffles.generate_shuffled_lists_generator(n)
+    deck_batch = [deck for deck in data_generator]
+    deck_batch_array = np.array(deck_batch, dtype=np.uint8)
 
+    # 2. Save to a new file
+    new_file_index = len([f for f in os.listdir(PATH_DATA) if f.startswith('new_decks_batch_')]) + 1
+    new_file_name = f'new_decks_batch_{new_file_index:03d}.npy'
+    new_file_path = os.path.join(PATH_DATA, new_file_name)
+    np.save(new_file_path, deck_batch_array)
+    print(f"Saved {n} new decks to {new_file_name}")
+
+    # 3. Score only new decks
+    choice_pairs = combo.create_choice_list()
+    score_df = combo.create_score_table(choice_pairs)
+    new_deck = yield_shuffles.load_data(new_file_name)
+    new_scores = combo.run_all_combinations_big_deck(choice_pairs, new_deck, score_df)
+
+    # 4. Append to existing CSV
+    csv_path = "Tables/pairs_table.csv"
+    if os.path.exists(csv_path):
+        existing_df = pd.read_csv(csv_path)
+        combined_df = combo.combine_score_tables(existing_df, new_scores)
+    else:
+        combined_df = new_scores
+    combo.save_results_to_csv(combined_df, filepath=csv_path)
+
+    # 5. Update visualizations
+    create_win_draw_heatmap_cards()
+    create_win_draw_heatmap_tricks()
 
 if __name__ == '__main__':
     #create_win_draw_heatmap_cards()
     #create_win_draw_heatmap_tricks()
+    #augment_data(100)
     augment_data(100)

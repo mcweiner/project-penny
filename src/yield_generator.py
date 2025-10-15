@@ -46,7 +46,7 @@ def load_data(filename: str) -> np.ndarray:
     Loads data from an .npy file located
     in the default directory
     """
-    return np.load(os.path.join(PATH_DATA, filename))
+    return np.load(os.path.join(PATH_DATA, filename), mmap_mode='r')
 
 
 # To demonstrate, we can iterate through and count the items.
