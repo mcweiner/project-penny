@@ -62,6 +62,7 @@ def run_all_combinations_big_deck(pairs, deck, score_table):
     """
     num_decks = len(deck)
     for n in range(num_decks):
+        # Do we need this? We may need to optimize this part if we have time?
         print(f"Processing deck {n + 1}/{num_decks}...")
         for i in range(len(pairs)):
             p1_choice = np.array(pairs[i][0])

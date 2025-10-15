@@ -228,7 +228,9 @@ def augment_data(n: int):
         #print(f"Concatenated data: {updated_data}")
 
         # 3. Save the *entire* new array back to the file (overwriting the old one)
-        np.save(filename, updated_data)
+        output_path = os.path.join(PATH_DATA, filename)
+        np.save(output_path, updated_data)
+
 
     # update the .csv table
     # 1. Create the list of all possible pairs
