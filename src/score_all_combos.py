@@ -5,6 +5,7 @@ import itertools
 import random
 import yield_generator as yield_shuffles
 import os
+from joblib import Parallel, delayed
 
 
 random.seed(42) # For reproducibility
@@ -56,7 +57,65 @@ def create_score_table(pairs):
     df['ties_tricks'] = 0
     return df
 
+def score_one_deck(deck, pairs):
+    """
+    Score all pair combinations for a single deck.
+    Returns a NumPy array with aggregated results.
+    """
+    results = np.zeros((len(pairs), 6), dtype=np.int32)
+    # Columns: [p1_wins_cards, p2_wins_cards, ties_cards, p1_wins_tricks, p2_wins_tricks, ties_tricks]
+    
+    for i, (p1, p2) in enumerate(pairs):
+        p1_choice = np.array(p1, dtype=np.int8)
+        p2_choice = np.array(p2, dtype=np.int8)
+
+        # Card-based
+        winner, _, _ = scorer.play_entire_deck_cards(p1_choice, p2_choice, deck)
+        if winner == 'p1':
+            results[i, 0] += 1
+        elif winner == 'p2':
+            results[i, 1] += 1
+        else:
+            results[i, 2] += 1
+
+        # Trick-based
+        winner, _, _ = scorer.play_entire_deck_tricks(p1_choice, p2_choice, deck)
+        if winner == 'p1':
+            results[i, 3] += 1
+        elif winner == 'p2':
+            results[i, 4] += 1
+        else:
+            results[i, 5] += 1
+
+    return results
+
 def run_all_combinations_big_deck(pairs, deck, score_table):
+    """
+    Parallelized version that scores all combinations across many decks.
+    """
+    num_cores = os.cpu_count() or 4
+    print(f"⚙️ Using {num_cores} CPU cores...")
+
+    # Run in parallel across decks
+    results_list = Parallel(n_jobs=num_cores, backend="loky")(
+        delayed(score_one_deck)(deck[i], pairs) for i in range(len(deck))
+    )
+
+    # Combine results
+    total_results = np.sum(results_list, axis=0)
+
+    # Apply totals back into score_table
+    score_table['p1_wins_cards'] += total_results[:, 0]
+    score_table['p2_wins_cards'] += total_results[:, 1]
+    score_table['ties_cards'] += total_results[:, 2]
+    score_table['p1_wins_tricks'] += total_results[:, 3]
+    score_table['p2_wins_tricks'] += total_results[:, 4]
+    score_table['ties_tricks'] += total_results[:, 5]
+
+    print("✅ Parallel scoring complete.")
+    return score_table
+
+def run_all_combinations_big_deck_old(pairs, deck, score_table):
     """
     Run the scoring for all combinations of card choices over a specified number of decks.
     """
@@ -85,6 +144,8 @@ def run_all_combinations_big_deck(pairs, deck, score_table):
                 score_table.loc[i, 'ties_tricks'] += 1
     print("Processing complete.")
     return score_table
+
+
 
 def save_results_to_csv(score_df, filepath="pairs_table.csv"):
     """

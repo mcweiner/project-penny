@@ -54,7 +54,7 @@ def load_data(filename: str) -> np.ndarray:
 if __name__ == "__main__":
     # --- Example Usage ---
     # Using the generator to process the data without storing it all
-    num_to_generate = 10_000
+    num_to_generate = 100_000
     lists_per_file = num_to_generate/10
     data_generator = generate_shuffled_lists_generator(num_to_generate)
     count = 0

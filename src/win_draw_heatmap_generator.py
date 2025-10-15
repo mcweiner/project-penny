@@ -300,7 +300,6 @@ def augment_data(n: int):
     create_win_draw_heatmap_tricks()
 
 if __name__ == '__main__':
-    #create_win_draw_heatmap_cards()
-    #create_win_draw_heatmap_tricks()
+    create_win_draw_heatmap_cards()
+    create_win_draw_heatmap_tricks()
     #augment_data(100)
-    augment_data(100)
