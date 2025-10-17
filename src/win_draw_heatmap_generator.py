@@ -212,9 +212,9 @@ def old_augment_data(n: int):
     # update the .npy files (the data)
     for j in range(1, 11):
         filename = f'shuffled_lists_yield_part_{j}.npy'
-
-        startoff = int((j - 1) * n / 10)  # Forces the result to an integer
-        cutoff = int(j * n / 10)          # Forces the result to an integer
+        num_of_files = 100
+        startoff = int((j - 1) * n / num_of_files)  # Forces the result to an integer
+        cutoff = int(j * n / num_of_files)          # Forces the result to an integer
         
         # 1. Load the existing data
         existing_data = np.load(os.path.join(PATH_DATA, filename))
@@ -242,7 +242,7 @@ def old_augment_data(n: int):
     #deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
     # Load all deck files and combine them
     all_decks = []
-    for j in range(1, 11):
+    for j in range(1, num_of_files+1):
         filename = f'shuffled_lists_yield_part_{j}.npy'
         decks_part = yield_shuffles.load_data(filename)
         all_decks.append(decks_part)

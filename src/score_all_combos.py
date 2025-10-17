@@ -102,7 +102,19 @@ def run_all_combinations_big_deck(pairs, deck, score_table):
     )
 
     # Combine results
-    total_results = np.sum(results_list, axis=0)
+    # total_results = np.sum(results_list, axis=0)
+
+    # --- THE FIX IS HERE ---
+    # Instead of np.sum(results_list, ...), which creates a huge temporary array,
+    # we initialize the final array and add to it iteratively. This is memory-efficient.
+    if not results_list:
+        print("⚠️ No results returned from parallel processing.")
+        return score_table
+        
+    total_results = np.zeros_like(results_list[0]) # Create a (56, 6) array of zeros
+    for result_array in results_list:
+        total_results += result_array
+    # --- END OF FIX ---
 
     # Apply totals back into score_table
     score_table['p1_wins_cards'] += total_results[:, 0]
@@ -197,7 +209,8 @@ if __name__ == "__main__":
     #deck = yield_shuffles.load_data('shuffled_lists_yield_part_1.npy')  # Adjust size as needed
     # Load all deck files and combine them
     all_decks = []
-    for j in range(1, 11):
+    num_of_files = 100
+    for j in range(1, num_of_files + 1):
         filename = f'shuffled_lists_yield_part_{j}.npy'
         decks_part = yield_shuffles.load_data(filename)
         all_decks.append(decks_part)

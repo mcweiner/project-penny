@@ -30,6 +30,19 @@ def save_data(data: np.ndarray, filename: str) -> None:
     """
     full_filename = os.path.join(PATH_DATA, filename)
 
+    # Ensure the output directory exists
+    if not os.path.exists(PATH_DATA):
+        os.mkdir(PATH_DATA)
+
+    # Check if the input data is a NumPy array
+    if not isinstance(data, np.ndarray):
+        raise TypeError(f'data should be np.ndarray not {type(data)}')
+    
+    # np.save() automatically overwrites the file if it exists.
+    # The previous check for FileExistsError has been removed.
+    np.save(full_filename, data)
+    """full_filename = os.path.join(PATH_DATA, filename)
+
     if not os.path.exists(PATH_DATA):
         os.mkdir(PATH_DATA)
 
@@ -39,7 +52,7 @@ def save_data(data: np.ndarray, filename: str) -> None:
         if os.path.exists(full_filename):
             raise FileExistsError(f'{full_filename} already exists, select a new name!')
         np.save(full_filename, data)
-    return None
+    return None"""
 
 def load_data(filename: str) -> np.ndarray:
     """
@@ -54,8 +67,9 @@ def load_data(filename: str) -> np.ndarray:
 if __name__ == "__main__":
     # --- Example Usage ---
     # Using the generator to process the data without storing it all
-    num_to_generate = 1_000_000
-    lists_per_file = num_to_generate/10
+    num_to_generate = 5_000_000
+    num_of_files = 100
+    lists_per_file = num_to_generate/num_of_files
     data_generator = generate_shuffled_lists_generator(num_to_generate)
     count = 0
     current_batch = []
