@@ -104,5 +104,5 @@ if __name__ == "__main__":
     #elapsed_time = end_time - start_time
     #print(f"The code block took {elapsed_time:.4f} seconds to run.")
 
-    loaded_data = load_data('shuffled_lists_yield_part_1.npy')
-    print(loaded_data)
+    #loaded_data = load_data('shuffled_lists_yield_part_1.npy')
+    #print(loaded_data)
