@@ -101,22 +101,28 @@ def create_win_draw_heatmap_cards():
 def create_win_draw_heatmap_tricks():
     """
     Generates and saves a heatmap based on the '_tricks' columns from the CSV.
+    
+    The heatmap COLOR is based on full-precision FLOAT win probability.
+    The ANNOTATION and BOXING logic are based on INTEGER win/tie percentages.
     """
     
-    # Step 1: Define labels and data structure
+    # --- Step 1: Define labels and data structure ---
     num_labels = 8
     br_labels = [f'{i:03b}'.replace('0', 'B').replace('1', 'R') for i in range(num_labels)]
 
-    win_draw_prob_matrix = np.zeros((num_labels, num_labels), dtype=float)
+    # Matrix for heatmap color (uses floats for smooth gradient)
+    win_prob_matrix = np.zeros((num_labels, num_labels), dtype=float)
+    
+    # --- FIX: Create INTEGER matrices for the boxing/tie-break logic ---
+    # These will store the truncated percentages (e.g., 44, 15)
+    win_percent_matrix = np.zeros((num_labels, num_labels), dtype=int)
+    tie_percent_matrix = np.zeros((num_labels, num_labels), dtype=int)
+    
     annot_labels = np.full((num_labels, num_labels), "", dtype=object)
 
-    # Step 2: Read data from CSV and calculate probabilities
-    # --- FIX: Create a robust path that works regardless of where the script is run ---
-    # Get the directory where the script is located (e.g., .../project-penny/src)
+    # --- Step 2: Read data from CSV and calculate probabilities ---
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    # Go up one level to the project root (e.g., .../project-penny)
     project_root = os.path.dirname(script_dir)
-    # Construct the path to the 'Tables' folder
     tables_folder_path = os.path.join(project_root, 'Tables')
     csv_filename = os.path.join(tables_folder_path, 'pairs_table.csv')
 
@@ -126,8 +132,6 @@ def create_win_draw_heatmap_tricks():
         print(f"Error: '{csv_filename}' not found. Please ensure the 'Tables' directory is next to the 'src' directory.")
         return
 
-    # --- FIX: Calculate N from the first row, as it's consistent for each pair ---
-    # We assume the number of games (N) is the same for every pair.
     first_row = df.iloc[0]
     n_value = first_row['p1_wins_tricks'] + first_row['p2_wins_tricks'] + first_row['ties_tricks']
 
@@ -143,37 +147,71 @@ def create_win_draw_heatmap_tricks():
         if total_games > 0:
             p2_win_prob = p2_wins / total_games
             tie_prob = ties / total_games
-            win_or_tie_prob = (p2_wins + ties) / total_games
+            
+            # Create integer percentages for labels and logic
             p2_win_percent = int(p2_win_prob * 100)
             tie_percent = int(tie_prob * 100)
+            
             annot_labels[p1_choice, p2_choice] = f"{p2_win_percent}({tie_percent})"
+            
+            # --- FIX: Populate all three matrices ---
+            win_prob_matrix[p1_choice, p2_choice] = p2_win_prob       # For color
+            win_percent_matrix[p1_choice, p2_choice] = p2_win_percent # For logic
+            tie_percent_matrix[p1_choice, p2_choice] = tie_percent    # For logic
         else:
-            win_or_tie_prob = 0
+            # Set all to 0
+            win_prob_matrix[p1_choice, p2_choice] = 0
+            win_percent_matrix[p1_choice, p2_choice] = 0
+            tie_percent_matrix[p1_choice, p2_choice] = 0
             annot_labels[p1_choice, p2_choice] = "0(0)"
             
-        win_draw_prob_matrix[p1_choice, p2_choice] = win_or_tie_prob
-        
-    # Step 3: Create mask and generate plot
+    # --- Step 3: Create mask and generate plot ---
     mask = np.identity(num_labels, dtype=bool)
     plt.figure(figsize=(10, 8))
     ax = sns.heatmap(
-        win_draw_prob_matrix, xticklabels=br_labels, yticklabels=br_labels,
+        win_prob_matrix, # Use the FLOAT matrix for smooth color
+        xticklabels=br_labels, yticklabels=br_labels,
         annot=annot_labels, fmt='', annot_kws={"size": 8}, mask=mask,
         cmap='YlGnBu', linewidths=.5, cbar=False, square=True
     )
     ax.set_facecolor('darkgrey')
 
-    # Step 4: Highlight max values
+    # --- Step 4: Highlight max values using INTEGER logic ---
     for i in range(num_labels):
-        row_data = win_draw_prob_matrix[i, :]
-        if row_data.any():
-            max_value = np.max(row_data)
-            max_indices = np.where(row_data == max_value)[0]
-            for j in max_indices:
+        # --- FIX: Use the INTEGER percent matrix for all logic ---
+        row_win_data = win_percent_matrix[i, :]
+        
+        if row_win_data.any():
+            # 1. Find the highest win percentage (e.g., 44)
+            max_win_value = np.max(row_win_data)
+            
+            # 2. Find all indices that match this percentage (e.g., all 44s)
+            max_win_indices = np.where(row_win_data == max_win_value)[0]
+            
+            # 3. Check for ties
+            if len(max_win_indices) == 1:
+                # No tie
+                j = max_win_indices[0]
                 ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='black', lw=3))
+            else:
+                # A tie occurred. Use the INTEGER tie matrix to break it.
+                # --- FIX: Get tie percentages from the INTEGER matrix ---
+                tie_data_for_max_wins = tie_percent_matrix[i, max_win_indices]
+                
+                # Find the max tie percentage (e.g., 15)
+                max_tie_value = np.max(tie_data_for_max_wins)
+                
+                # Find all cells that match the max tie percentage
+                max_tie_sub_indices = np.where(tie_data_for_max_wins == max_tie_value)[0]
+                
+                # Convert back to the original column indices
+                final_column_indices_to_box = max_win_indices[max_tie_sub_indices]
+                
+                # Box all final candidates (e.g., both 44(15) cells)
+                for j in final_column_indices_to_box:
+                    ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=False, edgecolor='black', lw=3))
 
-    # Step 5: Add titles and save
-    # --- FIX: Use the corrected N value in the title ---
+    # --- Step 5: Add titles and save ---
     plt.title(f'My Chance of Win(Draw)\nby Tricks\nN={n_value}', fontsize=16, pad=20)
     plt.xlabel('My Choice', fontsize=12)
     plt.ylabel('Opponent Choice', fontsize=12)
