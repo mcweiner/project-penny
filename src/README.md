@@ -96,6 +96,14 @@ Once you have UV installed, simply download the repository, navigate to the dire
 
 To run the program:
 
+`uv run run_all_files.py` 
+This will generate five million decks, score them, and then create a heat map of the results. The scoring process takes a few hours. If you would like to change the number of decks generated, then you can go into `yield_generator.py` and change num_to_generate from 5_000_000 to whatever number of decks you would like. 
+
+To augment data:
+1. Our augment_data function is in `win_draw_heatmap_generator.py`. To run this function you can comment out the heatmap generator functions and uncomment the augment_data function under if __name__ == “__main__”. With this function you can specify the amount of new decks you want generate and it will update the heatmaps as well. 
+
+3. `uv run win_draw_heatmap_generator.py`
+
 `uv run main.py`
 
 ---
