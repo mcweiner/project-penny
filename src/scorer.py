@@ -75,9 +75,11 @@ def play_entire_deck_slow_tricks(p1_choice: np.ndarray, p2_choice: np.ndarray, d
     return winner, p1_total_tricks, p2_total_tricks
 
 def find_all_indices(choice, deck_windows):
+    """Find all starting indices of choice in deck_windows."""
     return np.flatnonzero(np.all(deck_windows == choice, axis=1))
 
 def play_entire_deck_cards(p1_choice, p2_choice, deck):
+    """Play the entire deck and return the winner and total cards."""
     deck_windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
     p1_idxs = find_all_indices(p1_choice, deck_windows)
     p2_idxs = find_all_indices(p2_choice, deck_windows)
@@ -109,6 +111,7 @@ def play_entire_deck_cards(p1_choice, p2_choice, deck):
     return winner, p1_total, p2_total
 
 def play_entire_deck_tricks(p1_choice, p2_choice, deck):
+    """Play the entire deck and return the winner and total tricks."""
     deck_windows = np.lib.stride_tricks.sliding_window_view(deck, 3)
     p1_idxs = find_all_indices(p1_choice, deck_windows)
     p2_idxs = find_all_indices(p2_choice, deck_windows)

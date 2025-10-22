@@ -102,9 +102,8 @@ This will generate five million decks, score them, and then create a heat map of
 To augment data:
 1. Our augment_data function is in `win_draw_heatmap_generator.py`. To run this function you can comment out the heatmap generator functions and uncomment the augment_data function under if __name__ == “__main__”. With this function you can specify the amount of new decks you want generate and it will update the heatmaps as well. 
 
-3. `uv run win_draw_heatmap_generator.py`
+2. `uv run win_draw_heatmap_generator.py`
 
-`uv run main.py`
 
 ---
 
