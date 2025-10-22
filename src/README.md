@@ -1,13 +1,5 @@
 # Project Penney
 
-The intended audience is students of mine taking DATA 440 in Fall 2025.
-
-Use this repository as a general guideline for how to structure you own repositories.
-
-First of all, always have a README.md like this one. The goal of your README should be to give users a high-level explanation of what your code is about and how to use it.
-
-You will often need to create more detailed documentation/instructions as well. Place those in a separate file, and link to them from the README.
-
 ---
 
 ## Penney's Game
@@ -86,9 +78,9 @@ https://en.wikipedia.org/wiki/Penney%27s_game
 
 The goal of this code is to demonstrate the advantage of going second in the Humble-Nishiyama Randomness Game, and better identify what the optimal choice is for going second based on the choice of sequence the first player makes. This will be accomplished by first randomly generating a settable amount of 52 length lists containing 26 0s (representing black cards) and 26 1s (representing red cards) so we have something to simulate a deck of 52 playing cards. Next, we will score the different matchups between two players in the Humble-Nishiyama Randomness Game; both playing by tricks and playing by cards. After scoring the number of wins for each player (as well as their tied games) for both ways to play the game in the 'pairs_table.csv' file located in the data folder, the code should then run to create a heatmap for both playing by tricks and playing by cards.
 
-This Heatmap will have the x-axis labeled as 'My Choice' and the y-axis labeled as 'Opponent Choice,' with the "Opponent" being the person who chooses their sequence first and the person labeled in 'My Choice' being the person who chooses their sequence second. Each cell will contain the number of wins followed by the number of ties in paranthesis [IE: Wins(ties)], with the cell that has the best 'score' being surrounded by a black border for each row. 
+This Heatmap will have the x-axis labeled as 'My Choice' and the y-axis labeled as 'Opponent Choice,' with the "Opponent" being the person who chooses their sequence first and the person labeled in 'My Choice' being the person who chooses their sequence second. Each cell will contain the number of wins followed by the number of ties in paranthesis [IE: Wins(ties)], with the cell that has the best 'score' being surrounded by a black border for each row. The code should allow for a user to add more to the number of tested decks, which will automatically update the .csv table and the heatmaps.
 
-Idealy, given enough cases (decks) to test with, this will highlight the advantage of going second in the Humble-Nishiyama Randomness Game while also showing which choice is best for the second player in each scenario.
+Idealy, given enough cases (decks) to test with, the results of this code will highlight the advantage of going second in the Humble-Nishiyama Randomness Game while also showing which choice is best for the second player in each scenario.
 
 ---
 
