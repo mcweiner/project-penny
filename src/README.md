@@ -76,6 +76,10 @@ If the game is ended after the first trick, there is a negligible chance of a dr
 
 Another variant exists, in which instead of evaluating the victory criteria for the Humble-Nishiyama Randomness Game by tricks, it is instead evaluated by the final number of cards both players possess. This variant of the game decreases the number of ties substantially, and further skews the probability of victory in the favor of the second player.
 
+For more information on Penney's game and Humble-Nishiyama, make use of the below resources:
+https://mathwo.github.io/assets/files/penney_game/humble-nishiyama_randomness_game-a_new_variation_on_penneys_coin_game.pdf
+https://en.wikipedia.org/wiki/Penney%27s_game
+
 --- 
 
 ## Overview
