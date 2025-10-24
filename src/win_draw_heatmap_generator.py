@@ -338,6 +338,10 @@ def augment_data(n: int):
     create_win_draw_heatmap_tricks()
 
 if __name__ == '__main__':
-    create_win_draw_heatmap_cards()
-    create_win_draw_heatmap_tricks()
-    #augment_data(100)
+    augment_data_question = input("Do you want to augment data? (y/n): ").strip().lower()
+    if augment_data_question == 'y':
+        n_decks = int(input("Enter the number of new decks to generate: ").strip())
+        augment_data(n_decks)
+    else:
+        create_win_draw_heatmap_cards()
+        create_win_draw_heatmap_tricks()
