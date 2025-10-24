@@ -4,11 +4,21 @@
 
 ## Penney's Game
 
-Penney's game, AKA Penney Ante, is an example of a three-bit sequence game invented by Walter Penney. It is played by two players using standard pennies (One side is heads and the other is tails).  The 1st player selects a sequence of heads and tails (of length 3 or larger), and shows this sequence to the 2nd player. The 2nd player then determines their own sequence of the same length as the 1st player's. The coin is then tossed until the 1st or 2nd player's sequence appears as a consecutive subsequence of the coin toss outcomes. The player whose sequence appears first wins. 
+Penney's Game, also known as Penney Ante, is a two-player sequence-matching game invented by Walter Penney. It's played using a standard coin (heads and tails).
 
-It should be noted, provided sequences of 3 or more are used, the 2nd player has an innate edge over the 1st. This is because the game is nontransitive, in that for any given sequence of length three or longer one can find another sequence that has higher probability of occurring first. 
+How to Play:
 
-The below table demonstrates the advantage of the second player, in how they are able to pick a specific sequence in response to the 1st player's to gain an innate advantage in the game.
+    1. Player 1 selects a sequence of heads and tails (length 3 or more) and shows it to Player 2.
+
+    2. Player 2 then selects their own sequence of the same length.
+
+    3. A coin is tossed repeatedly until either Player 1's or Player 2's sequence appears as a consecutive part of the coin toss 4. results.
+
+    The player whose sequence appears first wins.
+
+For any sequence of length 3 or more, Penney's Game is nontransitive. This means that for any sequence Player 1 chooses, Player 2 can always pick a different sequence that has a higher probability of appearing first.
+
+Because Player 2 makes their selection after Player 1, they have a significant mathematical edge. The table below demonstrates this advantage, showing the optimal sequence Player 2 can choose in response to Player 1's initial pick to maximize their odds of winning.
 
 | 1st player's choice | 2nd player's choice | Odds in favour of 2nd player |
 |---|---|---|
@@ -21,26 +31,62 @@ The below table demonstrates the advantage of the second player, in how they are
 | <u>R**R**</u>B | **B**<u>RR</u> | 3.08 to 1 |
 | <u>R**R**</u>R | **B**<u>RR</u> | 7.50 to 1 |
 
-A general rule of thumb for the second player is to start with the opposite of the middle choice of the first player, then follow it with the first player's first two choices. 
-    - So for the first player's choice of 1-2-3
-    - the second player must choose (!2)-1-2 
-(where !2 is the opposite of the 1st player's 2nd sequence choice)
+For a game using sequences of length 3, there is a simple "rule of thumb" Player 2 can use to guarantee an advantage.
+
+Player 2 should build their sequence as follows:
+
+    Take the opposite of Player 1's second (middle) choice.
+
+    Use that as their first choice.
+
+    Append Player 1's first two choices to it.
+
+Let's use H for Heads and T for Tails.
+
+    Player 1 chooses: H-T-H
+
+    Player 2 builds their sequence:
+
+        The middle choice of Player 1 is T. The opposite is H.
+
+        Player 1's first two choices are H-T.
+
+        Player 2 combines them: H + H-T
+
+    Player 2 chooses: H-H-T
+
+In this matchup, H-H-T will appear before H-T-H 2 out of 3 times, giving Player 2 a 2:1 advantage.
+
+    If Player 1's sequence is: 1 - 2 - 3
+
+    Player 2's optimal sequence is: `(Not 2) - 1 - 2
 
 ---
 
 ## The Humble-Nishiyama Variant
 
-One suggested variation on Penney's Game uses a pack of ordinary playing cards. The Humble-Nishiyama Randomness Game follows the same format using Red and Black cards, instead of Heads and Tails. The game is played as follows:
-    1.  At the start of a game each player decides on their three colour sequence for the whole game. 
-    2. The cards are then turned over one at a time and placed in a line, until one of the chosen triples appears. 
-    3. The winning player takes the upturned cards, having won that "trick". 
-    4. The game repeats steps 1 through 3 with the unused cards, both players collecting tricks as their triples come up, until all the cards in the pack have been used. 
+A common variation of Penney's Game is the Humble-Nishiyama Randomness Game, which uses a standard deck of playing cards. Instead of Heads and Tails, this version uses Red and Black cards.
 
-The winner of the game is the player that has won the most tricks, and games commonly end with a total of 7 tricks.
+How to Play:
 
-The general rule of thumb for the second player to gain an edge in this game is the same from Penney's Game, however the probabilty of victory are different. 
+    1. Choose Sequences: At the very start of the game, both players decide on their three-color sequence (e.g., Red-Black-Red). These sequences are fixed for the entire game.
 
-Below are approximate probabilities of the outcomes for each strategy based on computer simulations.<sup>[14]</sup>
+    2. Deal Cards: Cards are turned over one at a time from a shuffled deck and placed in a line.
+
+    3. Win a "Trick": The game continues until one of the chosen three-card sequences appears. The player whose sequence appears first wins all the upturned cards, which constitute one "trick."
+
+    4. Continue Play: The game resumes with the remaining cards in the deck, repeating steps 2 and 3. Players collect tricks as their sequences come up.
+
+    5. End of Game: The game is over when all cards in the pack have been used.
+
+The winner is the player who has won the most tricks by the end of the game. A typical game from a 52-card deck results in about 7 tricks being won.
+
+The optimal strategy for Player 2 is the same "rule of thumb" from the coin version:
+    If Player 1 chooses 1 - 2 - 3, Player 2 should choose (Not 2) - 1 - 2.
+
+However, unlike a coin toss (which is independent), a deck of cards has a "dependency" (drawing a Red card makes the next card slightly less likely to be Red). This changes the odds.
+
+The table below provides approximate probabilities for each strategy
 
 | 1st player's choice | 2nd player's choice | Probability 1st player wins | Probability 2nd player wins | Probability of a draw |
 |---|---|---|---|---|
@@ -70,17 +116,18 @@ Another variant exists, in which instead of evaluating the victory criteria for 
 
 For more information on Penney's game and Humble-Nishiyama, make use of the below resources:
 https://mathwo.github.io/assets/files/penney_game/humble-nishiyama_randomness_game-a_new_variation_on_penneys_coin_game.pdf
+
 https://en.wikipedia.org/wiki/Penney%27s_game
 
 --- 
 
 ## Overview
 
-The goal of this code is to demonstrate the advantage of going second in the Humble-Nishiyama Randomness Game, and better identify what the optimal choice is for going second based on the choice of sequence the first player makes. This will be accomplished by first randomly generating a settable amount of 52 length lists containing 26 0s (representing black cards) and 26 1s (representing red cards) so we have something to simulate a deck of 52 playing cards. Next, we will score the different matchups between two players in the Humble-Nishiyama Randomness Game; both playing by tricks and playing by cards. After scoring the number of wins for each player (as well as their tied games) for both ways to play the game in the 'pairs_table.csv' file located in the data folder, the code should then run to create a heatmap for both playing by tricks and playing by cards.
+The goal of this code is to demonstrate the advantage of going second in the Humble-Nishiyama Randomness Game and to precisely identify the optimal sequence for Player 2 based on Player 1's choice. This is accomplished by first generating a user-defined number of simulated 52-card decks, each represented as a 52-item list containing 26 0s (black cards) and 26 1s (red cards). Next, the code scores every possible matchup, calculating wins and ties for two different scoring methods: playing by "tricks" and playing by "cards." All results are saved in the data/pairs_table.csv file, which is then used to generate two heatmaps.
 
-This Heatmap will have the x-axis labeled as 'My Choice' and the y-axis labeled as 'Opponent Choice,' with the "Opponent" being the person who chooses their sequence first and the person labeled in 'My Choice' being the person who chooses their sequence second. Each cell will contain the number of wins followed by the number of ties in paranthesis [IE: Wins(ties)], with the cell that has the best 'score' being surrounded by a black border for each row. The code should allow for a user to add more to the number of tested decks, which will automatically update the .csv table and the heatmaps.
+These heatmaps are labeled "Opponent Choice" (Player 1) on the y-axis and "My Choice" (Player 2) on the x-axis. Each cell displays Player 2's Wins(Ties), and the cell with the best score in each row is highlighted with a black border. The code is designed to be augmentable, allowing a user to easily increase the number of simulated decks by running the 'augment_data(int: N)' method. Using this method will add an N number of decks automatically and score them, and then update the .csv with the additional scored deck before finally recreating the heatmaps with this updated data.
 
-Idealy, given enough cases (decks) to test with, the results of this code will highlight the advantage of going second in the Humble-Nishiyama Randomness Game while also showing which choice is best for the second player in each scenario.
+Ideally, given a sufficient number of simulated decks, the resulting data will clearly highlight the innate advantage of going second in the Humble-Nishiyama Randomness Game while also providing a definitive guide for Player 2's best response to the sequence chosen by player 1.
 
 ---
 
