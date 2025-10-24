@@ -142,27 +142,8 @@ Once you have UV installed, simply download the repository, navigate to the dire
 To run the program:
 
 `uv run run_all_files.py` 
-This will generate five million decks, score them, and then create a heat map of the results. The scoring process takes a few hours. If you would like to change the number of decks generated, then you can go into `yield_generator.py` and change num_to_generate from 5_000_000 to whatever number of decks you would like. 
+This will generate a specified number of decks, score them, and then create a heat map of the results. The scoring process may take a few hours. You will be asked how many decks you want to create and score. 
 
 To augment data:
-1. Our augment_data function is in `win_draw_heatmap_generator.py`. To run this function you can comment out the heatmap generator functions and uncomment the augment_data function under if __name__ == “__main__”. With this function you can specify the amount of new decks you want generate and it will update the heatmaps as well. 
-
-2. `uv run win_draw_heatmap_generator.py`
-
-
----
-
-## Contents
-
-You should provide a high-level description of the contents of your repository. You do not need to go into excruciating detail here. You can also place individual README.md files in each folder that go into more depth of the contents of that folder.
-
-`main.py`: This is the main entry point to the program. It should be named `main.py`, unless you have a good reason to deviate from that. This way the user does not need to guess about what they should be running.
-
-`src/`: The source code. This should contain all of the code that is needed to make your project work. We place it in a separate folder so that:
-
-- it is clear to the user that this is the source code, and they do not need to look at it unless they want to
-- the root directory of the repository does not get cluttered
-
-`data/`: As the name implies, put data in this folder. If you have a project containing raw and processed versions of the data, then you should create subdirectories such as `data/raw` and `data/processed`, for example. Use your best judgment and stay organized!
-
-`figures/`: Similar to above, we should place figures here. If you are keeping older versions of figures, then place the older ones in a subdirectory, and keep only the current versions in the top-level `figures/` directory.
+`uv run win_draw_heatmap_generator.py`
+You will then be asked if you want to augment data. If yes, then you will be asked how many decks to augment. If no, the heat maps will just be generated with the decks already created. 
