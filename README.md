@@ -142,8 +142,4 @@ Once you have UV installed, simply download the repository, navigate to the dire
 To run the program:
 
 `uv run run_all_files.py` 
-This will generate a specified number of decks, score them, and then create a heat map of the results. The scoring process may take a few hours. You will be asked how many decks you want to create and score. 
-
-To augment data:
-`uv run win_draw_heatmap_generator.py`
-You will then be asked if you want to augment data. If yes, then you will be asked how many decks to augment. If no, the heat maps will just be generated with the decks already created. 
+You will first be asked if you want to recreate our results. This will generate a specified number of decks, score them, and then create a heat map of the results. The scoring process may take a few hours. You will be asked how many decks you want to create and score. To augment data, tell the input "n" and then you will be asked if you would like to augment the data. You can then specify the number of decks you want to add. 
